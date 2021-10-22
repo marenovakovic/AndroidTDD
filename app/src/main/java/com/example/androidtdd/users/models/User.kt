@@ -1,0 +1,12 @@
+package com.example.androidtdd.users.models
+
+data class User(
+    val id: Int,
+    val name: String,
+    val email: String?,
+    val userName: String,
+    val address: Address,
+    val phone: String,
+    val website: String,
+    val company: Company,
+)
