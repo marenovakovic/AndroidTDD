@@ -1,9 +1,9 @@
 package com.example.androidtdd
 
 import androidx.lifecycle.SavedStateHandle
+import com.example.androidtdd.users.api.fake.FakeUsersApi
 import com.example.androidtdd.users.presentation.UsersState
 import com.example.androidtdd.users.presentation.UsersViewModel
-import com.example.androidtdd.users.api.fake.FakeUsersApi
 import com.example.androidtdd.users.usecases.FetchUsersUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher

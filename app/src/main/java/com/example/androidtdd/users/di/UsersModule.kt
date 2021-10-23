@@ -1,11 +1,13 @@
 package com.example.androidtdd.users.di
 
-import com.example.androidtdd.users.api.fake.FakeUsersApi
+import com.example.androidtdd.network.httpClient
 import com.example.androidtdd.users.api.UsersApi
+import com.example.androidtdd.users.api.UsersApiImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.ktor.client.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
@@ -17,5 +19,8 @@ object UsersModule {
     fun dispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @Provides
-    fun usersApi(): UsersApi = FakeUsersApi
+    fun httpClient(): HttpClient = httpClient
+
+    @Provides
+    fun usersApi(httpClient: HttpClient): UsersApi = UsersApiImpl(httpClient)
 }
