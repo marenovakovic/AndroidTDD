@@ -1,7 +1,9 @@
 package com.example.androidtdd
 
 import android.annotation.SuppressLint
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
+import com.example.androidtdd.usecases.invoke
 import com.example.androidtdd.users.api.fake.FakeUsersApi
 import com.example.androidtdd.users.presentation.UsersState
 import com.example.androidtdd.users.presentation.UsersViewModel
@@ -11,10 +13,15 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import org.junit.Rule
+import org.junit.Test
 import kotlin.test.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class UsersViewModelTest {
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
+
     private val fetchUsersUseCase = FetchUsersUseCase(FakeUsersApi)
     private lateinit var viewModel: UsersViewModel
 
@@ -38,6 +45,8 @@ class UsersViewModelTest {
 
         assertSame(states.first(), UsersState.Loading)
         assertTrue(states[1] is UsersState.Users)
+
+        job.cancel()
     }
 
     @Test
@@ -85,5 +94,25 @@ class UsersViewModelTest {
         viewModel.search("")
 
         assertEquals(usersState.users, allUsers)
+    }
+
+    @Test
+    fun `should show same query after process death`() = runBlocking {
+        val dispatcher = TestCoroutineDispatcher()
+        val savedStateHandle = SavedStateHandle()
+        val fetchUsers = FetchUsersUseCase(FakeUsersApi)
+
+        val users = fetchUsers()
+        savedStateHandle["users"] = users
+
+        val query = "Ervin"
+        savedStateHandle["query"] = query
+
+        val viewModel = UsersViewModel(dispatcher, savedStateHandle, fetchUsers)
+        val state = viewModel.state.value
+
+        assertTrue(state is UsersState.Users)
+        val expectedUsers = users.filter { it.name.contains(query, ignoreCase = true) }
+        assertEquals(expectedUsers, state.users)
     }
 }
