@@ -1,9 +1,11 @@
 package com.example.androidtdd.users.ui
 
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.androidtdd.R
 import com.example.androidtdd.users.models.User
 
 class UsersAdapter : RecyclerView.Adapter<UsersAdapter.UserHolder>() {
@@ -15,7 +17,8 @@ class UsersAdapter : RecyclerView.Adapter<UsersAdapter.UserHolder>() {
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserHolder {
-        val view = TextView(parent.context)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.list_user_card, parent, false)
         return UserHolder(view)
     }
 
@@ -25,8 +28,14 @@ class UsersAdapter : RecyclerView.Adapter<UsersAdapter.UserHolder>() {
     override fun getItemCount(): Int = users.size
 
     inner class UserHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val nameTextView = itemView.findViewById<TextView>(R.id.name)
+        private val emailTextView = itemView.findViewById<TextView>(R.id.email)
+        private val phoneNumberTextView = itemView.findViewById<TextView>(R.id.phoneNumber)
+
         fun bind(user: User) {
-            (itemView as TextView).text = user.name
+            nameTextView.text = user.name
+            emailTextView.text = user.email
+            phoneNumberTextView.text = user.phone
         }
     }
 }

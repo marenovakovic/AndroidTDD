@@ -1,16 +1,17 @@
 package com.example.androidtdd
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.SavedStateHandle
 import com.example.androidtdd.users.api.fake.FakeUsersApi
 import com.example.androidtdd.users.presentation.UsersState
 import com.example.androidtdd.users.presentation.UsersViewModel
 import com.example.androidtdd.users.usecases.FetchUsersUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class UsersViewModelTest {
@@ -24,6 +25,19 @@ class UsersViewModelTest {
     fun setUp() {
         val dispatcher = TestCoroutineDispatcher()
         viewModel = UsersViewModel(dispatcher, SavedStateHandle(), fetchUsersUseCase)
+    }
+
+    @SuppressLint("IgnoreWithoutReason")
+    @Ignore
+    @Test
+    fun `should emit Loading when created`() = runBlocking {
+        val states = mutableListOf<UsersState>()
+        val job = launch {
+            viewModel.state.toList(states)
+        }
+
+        assertSame(states.first(), UsersState.Loading)
+        assertTrue(states[1] is UsersState.Users)
     }
 
     @Test
