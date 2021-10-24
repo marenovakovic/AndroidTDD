@@ -79,14 +79,6 @@ class UsersViewModelTest {
         assertUsersStateContainsOnlySearchedUsers(usersState, secondQuery)
     }
 
-    private fun assertUsersStateContainsOnlySearchedUsers(
-        state: UsersState.Users,
-        query: String,
-    ) {
-        assertTrue(state.users.all { it.name.contains(query, ignoreCase = true) })
-        assertTrue(state.users.none { !it.name.contains(query, ignoreCase = true) })
-    }
-
     @Test
     fun `empty query should show all users`() = runBlocking {
         val allUsers = fetchUsersUseCase()
@@ -102,10 +94,8 @@ class UsersViewModelTest {
     fun `should show same query after process death`() = runBlocking {
         val dispatcher = TestCoroutineDispatcher()
         val fetchUsers = FetchUsersUseCase(FakeUsersApi)
-        val users = fetchUsers()
         val query = "Ervin"
         val savedStateHandle = SavedStateHandle().apply {
-            set("users", users)
             set("query", query)
         }
 
@@ -113,7 +103,14 @@ class UsersViewModelTest {
         val state = viewModel.state.value
 
         assertTrue(state is UsersState.Users)
-        val expectedUsers = users.filter { it.name.contains(query, ignoreCase = true) }
-        assertEquals(expectedUsers, state.users)
+        assertUsersStateContainsOnlySearchedUsers(state, query)
+    }
+
+    private fun assertUsersStateContainsOnlySearchedUsers(
+        state: UsersState.Users,
+        query: String,
+    ) {
+        assertTrue(state.users.all { it.name.contains(query, ignoreCase = true) })
+        assertTrue(state.users.none { !it.name.contains(query, ignoreCase = true) })
     }
 }
