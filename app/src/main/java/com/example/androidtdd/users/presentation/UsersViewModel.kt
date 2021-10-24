@@ -19,10 +19,6 @@ class UsersViewModel @Inject constructor(
 ) : ViewModel() {
     private val query = savedStateHandle.flow(QUERY, "")
 
-    init {
-        println(savedStateHandle.get<String>(QUERY))
-    }
-
     val state: StateFlow<UsersState> =
         flow { emit(fetchUsers()) }
             .combine(query) { users, query ->
