@@ -26,9 +26,10 @@ class UsersViewModel @Inject constructor(
     val state: StateFlow<UsersState> =
         flow { emit(fetchUsers()) }
             .combine(query) { users, query ->
-                query to users.filter { it.name.contains(query, ignoreCase = true) }
+                val filteredUsers = users.filter { it.name.contains(query, ignoreCase = true) }
+                filteredUsers to query
             }
-            .map { (query, users) -> UsersState.Users(users, query) }
+            .map { (users, query) -> UsersState.Users(users, query) }
             .flowOn(dispatcher)
             .stateIn(
                 scope = viewModelScope,
