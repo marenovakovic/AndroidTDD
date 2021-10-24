@@ -51,6 +51,17 @@ class UsersFragment : Fragment(R.layout.users_fragment) {
 
     private fun handleState(state: UsersState) = when (state) {
         UsersState.Loading -> Unit
-        is UsersState.Users -> usersAdapter.users = state.users
+        is UsersState.Users -> handleSuccessState(state)
+    }
+
+    private fun handleSuccessState(state: UsersState.Users) {
+        usersAdapter.users = state.users
+        setQuery(state)
+    }
+
+    private fun setQuery(state: UsersState.Users) {
+        val searchView = requireActivity().findViewById<EditText>(R.id.userSearch)
+        searchView.setText(state.query)
+        searchView.setSelection(state.query.length)
     }
 }

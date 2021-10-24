@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.androidtdd.savedStateHandle.flow
 import com.example.androidtdd.usecases.invoke
-import com.example.androidtdd.users.models.User
 import com.example.androidtdd.users.usecases.FetchUsersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -18,24 +17,22 @@ class UsersViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val fetchUsers: FetchUsersUseCase,
 ) : ViewModel() {
-    private val users = savedStateHandle.flow(USERS, emptyList<User>())
     private val query = savedStateHandle.flow(QUERY, "")
 
+    init {
+        println(savedStateHandle.get<String>(QUERY))
+    }
+
     val state: StateFlow<UsersState> =
-        users
-            .map { savedUsers ->
-                if (savedUsers.isEmpty()) fetchUsers().also {
-                    savedStateHandle[USERS] = it
-                } else savedUsers
-            }
+        flow { emit(fetchUsers()) }
             .combine(query) { users, query ->
-                users.filter { it.name.contains(query, ignoreCase = true) }
+                query to users.filter { it.name.contains(query, ignoreCase = true) }
             }
-            .map { UsersState.Users(it) }
+            .map { (query, users) -> UsersState.Users(users, query) }
             .flowOn(dispatcher)
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(),
+                started = SharingStarted.Eagerly,
                 initialValue = UsersState.Loading,
             )
 
@@ -44,7 +41,6 @@ class UsersViewModel @Inject constructor(
     }
 
     companion object {
-        private const val USERS = "users"
         private const val QUERY = "query"
     }
 }
