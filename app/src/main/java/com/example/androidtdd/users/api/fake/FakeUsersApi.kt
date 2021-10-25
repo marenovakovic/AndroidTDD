@@ -10,4 +10,7 @@ import kotlinx.serialization.json.Json
 object FakeUsersApi : UsersApi {
     override suspend fun fetchUsers(): List<UserDto> =
         Json.decodeFromString(fakeUserJson)
+
+    override suspend fun fetchUser(userId: Int): UserDto =
+        fetchUsers().first { it.id == userId }
 }

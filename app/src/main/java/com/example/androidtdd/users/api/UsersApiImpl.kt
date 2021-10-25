@@ -10,4 +10,7 @@ class UsersApiImpl @Inject constructor(
 ) : UsersApi {
     override suspend fun fetchUsers(): List<UserDto> =
         httpClient.get("https://jsonplaceholder.typicode.com/users")
+
+    override suspend fun fetchUser(userId: Int): UserDto =
+        fetchUsers().first { it.id == userId }
 }

@@ -9,5 +9,19 @@
         android:id="@+id/usersFragment"
         android:name="com.example.androidtdd.users.ui.UsersFragment"
         android:label="users_fragment"
-        tools:layout="@layout/users_fragment" />
+        tools:layout="@layout/users_fragment" >
+        <action
+            android:id="@+id/showUserDetails"
+            app:destination="@id/userDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userDetailsFragment"
+        android:name="com.example.androidtdd.userDetails.ui.UserDetailsFragment"
+        android:label="user_details_fragment"
+        tools:layout="@layout/user_details_fragment" >
+        <argument
+            android:name="userId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
 </navigation>

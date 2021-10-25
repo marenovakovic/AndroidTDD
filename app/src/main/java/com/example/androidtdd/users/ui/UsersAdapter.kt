@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.androidtdd.R
 import com.example.androidtdd.users.models.User
 
-class UsersAdapter : RecyclerView.Adapter<UsersAdapter.UserHolder>() {
+class UsersAdapter(
+    private val onUserClick: (Int) -> Unit,
+) : RecyclerView.Adapter<UsersAdapter.UserHolder>() {
 
     var users: List<User> = emptyList()
         set(value) {
@@ -36,6 +38,8 @@ class UsersAdapter : RecyclerView.Adapter<UsersAdapter.UserHolder>() {
             nameTextView.text = user.name
             emailTextView.text = user.email
             phoneNumberTextView.text = user.phone
+
+            itemView.setOnClickListener { onUserClick(user.id) }
         }
     }
 }

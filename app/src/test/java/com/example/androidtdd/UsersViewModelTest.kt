@@ -13,9 +13,13 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.test.*
+import kotlin.test.Ignore
+import kotlin.test.assertEquals
+import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class UsersViewModelTest {
@@ -28,7 +32,7 @@ class UsersViewModelTest {
     private val usersState: UsersState.Users
         get() = viewModel.state.value as UsersState.Users
 
-    @BeforeTest
+    @Before
     fun setUp() {
         val dispatcher = TestCoroutineDispatcher()
         viewModel = UsersViewModel(dispatcher, SavedStateHandle(), fetchUsersUseCase)

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidtdd.R
 import com.example.androidtdd.users.presentation.UsersState
@@ -21,7 +22,10 @@ class UsersFragment : Fragment(R.layout.users_fragment) {
     private val viewModel: UsersViewModel by viewModels()
 
     private val usersAdapter: UsersAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        UsersAdapter()
+        UsersAdapter { userId ->
+            val action = UsersFragmentDirections.showUserDetails(userId)
+            findNavController().navigate(action)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
