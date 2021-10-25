@@ -8,7 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.example.androidtdd.R
-import com.example.androidtdd.userDetails.presentation.UserDetailsState.UserDetailsState
+import com.example.androidtdd.userDetails.presentation.UserDetailsState
 import com.example.androidtdd.userDetails.presentation.UserDetailsViewModel
 import com.example.androidtdd.users.models.User
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,8 +33,8 @@ class UserDetailsFragment : Fragment(R.layout.user_details_fragment) {
     }
 
     private fun handleState(state: UserDetailsState) = when (state) {
-        UserDetailsState.Loading -> Unit
-        is UserDetailsState.UserDetails -> handleUserDetails(state.user)
+        com.example.androidtdd.userDetails.presentation.UserDetailsState.Loading -> Unit
+        is com.example.androidtdd.userDetails.presentation.UserDetailsState.UserDetails -> handleUserDetails(state.user)
     }
 
     private fun handleUserDetails(user: User) {

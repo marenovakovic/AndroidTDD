@@ -1,4 +1,4 @@
-package com.example.androidtdd.userDetails.presentation.UserDetailsState
+package com.example.androidtdd.userDetails.presentation
 
 import com.example.androidtdd.users.models.User
 

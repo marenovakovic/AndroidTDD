@@ -3,7 +3,7 @@ package com.example.androidtdd
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
 import com.example.androidtdd.usecases.invoke
-import com.example.androidtdd.userDetails.presentation.UserDetailsState.UserDetailsState
+import com.example.androidtdd.userDetails.presentation.UserDetailsState
 import com.example.androidtdd.userDetails.presentation.UserDetailsViewModel
 import com.example.androidtdd.userDetails.usecases.FetchUserUseCase
 import com.example.androidtdd.users.api.fake.FakeUsersApi
@@ -57,9 +57,9 @@ class UserDetailsViewModelTest {
             viewModel.state.toList(states)
         }
 
-        assertSame(states[0], UserDetailsState.Loading)
-        assertTrue(states[1] is UserDetailsState.UserDetails)
-        assertEquals((states[1] as UserDetailsState.UserDetails).user, user)
+        assertSame(states[0], com.example.androidtdd.userDetails.presentation.UserDetailsState.Loading)
+        assertTrue(states[1] is com.example.androidtdd.userDetails.presentation.UserDetailsState.UserDetails)
+        assertEquals((states[1] as com.example.androidtdd.userDetails.presentation.UserDetailsState.UserDetails).user, user)
 
         job.cancel()
     }

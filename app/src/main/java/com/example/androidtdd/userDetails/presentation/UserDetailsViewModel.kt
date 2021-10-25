@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.androidtdd.savedStateHandle.flow
-import com.example.androidtdd.userDetails.presentation.UserDetailsState.UserDetailsState
 import com.example.androidtdd.userDetails.usecases.FetchUserUseCase
 import com.example.androidtdd.users.models.User
 import dagger.hilt.android.lifecycle.HiltViewModel
