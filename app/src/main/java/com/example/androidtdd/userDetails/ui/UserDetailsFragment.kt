@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.example.androidtdd.R
 import com.example.androidtdd.userDetails.presentation.UserDetailsState.UserDetailsState
@@ -26,7 +27,8 @@ class UserDetailsFragment : Fragment(R.layout.user_details_fragment) {
         super.onViewCreated(view, savedInstanceState)
 
         lifecycleScope.launch {
-            viewModel.state.collect(::handleState)
+            viewModel.state.flowWithLifecycle(viewLifecycleOwner.lifecycle)
+                .collect(::handleState)
         }
     }
 

@@ -9,10 +9,10 @@ import com.example.androidtdd.users.presentation.UsersState
 import com.example.androidtdd.users.presentation.UsersViewModel
 import com.example.androidtdd.users.usecases.FetchUsersUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -39,18 +39,9 @@ class UsersViewModelTest {
     }
 
     @SuppressLint("IgnoreWithoutReason")
-    @Ignore
     @Test
-    fun `should emit Loading when created`() = runBlocking {
-        val states = mutableListOf<UsersState>()
-        val job = launch {
-            viewModel.state.toList(states)
-        }
-
-        assertSame(states.first(), UsersState.Loading)
-        assertTrue(states[1] is UsersState.Users)
-
-        job.cancel()
+    fun `should emit Loading when created`() = runBlockingTest {
+        assertSame(viewModel.state.first(), UsersState.Loading)
     }
 
     @SuppressLint("IgnoreWithoutReason")

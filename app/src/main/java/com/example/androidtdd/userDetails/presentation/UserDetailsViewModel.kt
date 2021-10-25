@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.androidtdd.savedStateHandle.flow
 import com.example.androidtdd.userDetails.presentation.UserDetailsState.UserDetailsState
 import com.example.androidtdd.userDetails.usecases.FetchUserUseCase
+import com.example.androidtdd.users.models.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
@@ -21,7 +22,9 @@ class UserDetailsViewModel @Inject constructor(
         savedStateHandle
             .flow(USER_ID, -1)
             .map { id -> fetchUser(id) }
-            .map { user -> UserDetailsState.UserDetails(user) }
+            .map<User, UserDetailsState> { user -> UserDetailsState.UserDetails(user) }
+            .onStart { emit(UserDetailsState.Loading) }
+            .onEach { println(it) }
             .flowOn(dispatcher)
             .stateIn(
                 viewModelScope,

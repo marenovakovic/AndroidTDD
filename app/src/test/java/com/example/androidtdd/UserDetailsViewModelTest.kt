@@ -2,18 +2,24 @@ package com.example.androidtdd
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
-import app.cash.turbine.test
 import com.example.androidtdd.usecases.invoke
 import com.example.androidtdd.userDetails.presentation.UserDetailsState.UserDetailsState
 import com.example.androidtdd.userDetails.presentation.UserDetailsViewModel
 import com.example.androidtdd.userDetails.usecases.FetchUserUseCase
 import com.example.androidtdd.users.api.fake.FakeUsersApi
 import com.example.androidtdd.users.usecases.FetchUsersUseCase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -27,6 +33,16 @@ class UserDetailsViewModelTest {
     private val fetchUsers = FetchUsersUseCase(FakeUsersApi)
     private val fetchUser = FetchUserUseCase(FakeUsersApi)
 
+    @Before
+    fun setUp() {
+        Dispatchers.setMain(TestCoroutineDispatcher())
+    }
+
+    @After
+    fun cleanUp() {
+        Dispatchers.resetMain()
+    }
+
     @OptIn(ExperimentalTime::class)
     @Test
     fun `should emit user with userId passed to it`() = runBlockingTest {
@@ -36,11 +52,19 @@ class UserDetailsViewModelTest {
         }
         val viewModel = UserDetailsViewModel(savedStateHandle, fetchUser, TestCoroutineDispatcher())
 
-        viewModel.state.test {
-            assertSame(UserDetailsState.Loading, awaitItem())
-            val state = awaitItem()
-            assertTrue(state is UserDetailsState.UserDetails)
-            assertEquals((state as UserDetailsState.UserDetails).user, user)
+        val states = mutableListOf<UserDetailsState>()
+        val job = launch {
+            viewModel.state.toList(states)
         }
+
+        println("-------------------")
+        println(states)
+        println("-------------------")
+
+        assertSame(states[0], UserDetailsState.Loading)
+        assertTrue(states[1] is UserDetailsState.UserDetails)
+        assertEquals((states[1] as UserDetailsState.UserDetails).user, user)
+
+        job.cancel()
     }
 }
