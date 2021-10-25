@@ -57,10 +57,6 @@ class UserDetailsViewModelTest {
             viewModel.state.toList(states)
         }
 
-        println("-------------------")
-        println(states)
-        println("-------------------")
-
         assertSame(states[0], UserDetailsState.Loading)
         assertTrue(states[1] is UserDetailsState.UserDetails)
         assertEquals((states[1] as UserDetailsState.UserDetails).user, user)
