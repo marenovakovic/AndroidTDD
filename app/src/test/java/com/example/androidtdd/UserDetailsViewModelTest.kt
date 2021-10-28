@@ -30,18 +30,11 @@ class UserDetailsViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
     private val fetchUsers = FetchUsersUseCase(FakeUsersApi)
     private val fetchUser = FetchUserUseCase(FakeUsersApi)
-
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(TestCoroutineDispatcher())
-    }
-
-    @After
-    fun cleanUp() {
-        Dispatchers.resetMain()
-    }
 
     @OptIn(ExperimentalTime::class)
     @Test
@@ -50,16 +43,16 @@ class UserDetailsViewModelTest {
         val savedStateHandle = SavedStateHandle().apply {
             set("userId", user.id)
         }
-        val viewModel = UserDetailsViewModel(savedStateHandle, fetchUser, TestCoroutineDispatcher())
+        val viewModel = UserDetailsViewModel(savedStateHandle, fetchUser)
 
         val states = mutableListOf<UserDetailsState>()
         val job = launch {
             viewModel.state.toList(states)
         }
 
-        assertSame(states[0], com.example.androidtdd.userDetails.presentation.UserDetailsState.Loading)
-        assertTrue(states[1] is com.example.androidtdd.userDetails.presentation.UserDetailsState.UserDetails)
-        assertEquals((states[1] as com.example.androidtdd.userDetails.presentation.UserDetailsState.UserDetails).user, user)
+        assertSame(states[0], UserDetailsState.Loading)
+        assertTrue(states[1] is UserDetailsState.UserDetails)
+        assertEquals((states[1] as UserDetailsState.UserDetails).user, user)
 
         job.cancel()
     }

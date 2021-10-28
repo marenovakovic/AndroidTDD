@@ -26,6 +26,9 @@ class UsersViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
     private val fetchUsersUseCase = FetchUsersUseCase(FakeUsersApi)
     private lateinit var viewModel: UsersViewModel
 
@@ -34,8 +37,7 @@ class UsersViewModelTest {
 
     @Before
     fun setUp() {
-        val dispatcher = TestCoroutineDispatcher()
-        viewModel = UsersViewModel(dispatcher, SavedStateHandle(), fetchUsersUseCase)
+        viewModel = UsersViewModel(SavedStateHandle(), fetchUsersUseCase)
     }
 
     @SuppressLint("IgnoreWithoutReason")
@@ -94,7 +96,7 @@ class UsersViewModelTest {
             set("query", query)
         }
 
-        val viewModel = UsersViewModel(dispatcher, savedStateHandle, fetchUsers)
+        val viewModel = UsersViewModel(savedStateHandle, fetchUsers)
         val state = viewModel.state.value
 
         assertTrue(state is UsersState.Users)
