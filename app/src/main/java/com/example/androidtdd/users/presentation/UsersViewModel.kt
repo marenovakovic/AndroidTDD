@@ -29,7 +29,7 @@ class UsersViewModel @Inject constructor(
             .flowOn(dispatcher)
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.Eagerly,
+                started = SharingStarted.WhileSubscribed(),
                 initialValue = UsersState.Loading,
             )
 

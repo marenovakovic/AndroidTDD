@@ -33,8 +33,8 @@ class UserDetailsFragment : Fragment(R.layout.user_details_fragment) {
     }
 
     private fun handleState(state: UserDetailsState) = when (state) {
-        com.example.androidtdd.userDetails.presentation.UserDetailsState.Loading -> Unit
-        is com.example.androidtdd.userDetails.presentation.UserDetailsState.UserDetails -> handleUserDetails(state.user)
+        UserDetailsState.Loading -> Unit
+        is UserDetailsState.UserDetails -> handleUserDetails(state.user)
     }
 
     private fun handleUserDetails(user: User) {
