@@ -26,7 +26,7 @@ class UsersViewModel @Inject constructor(
             .map { (users, query) -> UsersState.Users(users, query) }
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(),
+                started = SharingStarted.WhileSubscribed(5_000),
                 initialValue = UsersState.Loading,
             )
 

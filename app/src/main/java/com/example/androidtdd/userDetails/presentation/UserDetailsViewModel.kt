@@ -23,7 +23,7 @@ class UserDetailsViewModel @Inject constructor(
             .onStart { emit(UserDetailsState.Loading) }
             .stateIn(
                 viewModelScope,
-                SharingStarted.WhileSubscribed(),
+                SharingStarted.WhileSubscribed(5_000),
                 UserDetailsState.Loading,
             )
 
